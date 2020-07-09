@@ -122,30 +122,7 @@ def create_app(test_config=None):
   the form will clear and the question will appear at the end of the last page
   of the questions list in the "List" tab.  
   '''
-  # @app.route('/questions', methods=['POST'])
-  # def new_question():
-  #   body = request.get_json()
-  #   new_question = body.get('question')
-  #   answer_text = body.get('answer')
-  #   new_category = body.get('category')
-  #   new_difficulty = body.get('difficulty')
 
-  # try:
-  #   question = Question(question=new_question, answer=answer_text, category=new_category, difficulty=new_difficulty)
-  #   question.insert()
-
-  #   selection = Question.query.order_by(Question.id).all()
-  #   current_questions = paginate_questions(request, selection)
-
-  #   return jsonify({
-  #       'success':True,
-  #       'created':Question.id,
-  #       'questions':current_questions,
-  #       'total questions':len(Question.query.all())
-  #     })
-    
-  # except:
-  #   abort(422)
   @app.route('/questions', methods=['POST'])
   def add_question():
     body = request.get_json()
@@ -182,39 +159,23 @@ def create_app(test_config=None):
   # only question that include that string within their question. 
   # Try using the word "title" to start. 
   # '''
-  # @app.route('/quizzes', methods=['POST'])
-  # def get_quiz_questions():
-  #       body = request.get_json()
-  #       if not body:
-  #           abort(400)
-  #       previous_q = body['previous_questions']
-  #       category_id = body['quiz_category']['id']
-  #       category_id = str(int(category_id) + 1)
 
-  #       if category_id == 0:
-  #           if previous_q is not None:
-  #               questions = Question.query.filter(Question.id.notin_(previous_q)).all()
-  #           else:
-  #               questions = Question.query.all()
-  #       else:
-  #           if previous_q is not None:
-  #               questions = Question.query.filter(
-  #                   Question.id.notin_(previous_q),
-  #                   Question.category == category_id).all()
-  #           else:
-  #               questions = Question.query.filter(
-  #                   Question.category == category_id).all()
+  @app.route('/questions', methods=['POST'])
+  def add_new_question():
+        body = request.get_json()
+        search_term = body.get('searchTerm', None)
 
-  #       next_question = random.choice(questions).format()
-  #       if not next_question:
-  #           abort(404)
-  #       if next_question is None:
-  #           next_question = False
+        try:
+            if search_term:
+                selection = Question.query.order_by(Question.id).filter(Question.question.ilike('%{}%'.format(search_term)))
+                current_questions = paginate_questions(request, selection)
 
-  #       return jsonify({
-  #           'success': True,
-  #           'question': next_question
-  #       })
+                return jsonify({
+                    'success': True,
+                    'questions': current_questions,
+                    'total_questions': len(selection.all()),
+                    'current_category': None
+                })
 
   # '''
   # @TODO: 
