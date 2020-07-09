@@ -182,39 +182,39 @@ def create_app(test_config=None):
   # only question that include that string within their question. 
   # Try using the word "title" to start. 
   # '''
-  @app.route('/quizzes', methods=['POST'])
-  def get_quiz_questions():
-        body = request.get_json()
-        if not body:
-            abort(400)
-        previous_q = body['previous_questions']
-        category_id = body['quiz_category']['id']
-        category_id = str(int(category_id) + 1)
+  # @app.route('/quizzes', methods=['POST'])
+  # def get_quiz_questions():
+  #       body = request.get_json()
+  #       if not body:
+  #           abort(400)
+  #       previous_q = body['previous_questions']
+  #       category_id = body['quiz_category']['id']
+  #       category_id = str(int(category_id) + 1)
 
-        if category_id == 0:
-            if previous_q is not None:
-                questions = Question.query.filter(Question.id.notin_(previous_q)).all()
-            else:
-                questions = Question.query.all()
-        else:
-            if previous_q is not None:
-                questions = Question.query.filter(
-                    Question.id.notin_(previous_q),
-                    Question.category == category_id).all()
-            else:
-                questions = Question.query.filter(
-                    Question.category == category_id).all()
+  #       if category_id == 0:
+  #           if previous_q is not None:
+  #               questions = Question.query.filter(Question.id.notin_(previous_q)).all()
+  #           else:
+  #               questions = Question.query.all()
+  #       else:
+  #           if previous_q is not None:
+  #               questions = Question.query.filter(
+  #                   Question.id.notin_(previous_q),
+  #                   Question.category == category_id).all()
+  #           else:
+  #               questions = Question.query.filter(
+  #                   Question.category == category_id).all()
 
-        next_question = random.choice(questions).format()
-        if not next_question:
-            abort(404)
-        if next_question is None:
-            next_question = False
+  #       next_question = random.choice(questions).format()
+  #       if not next_question:
+  #           abort(404)
+  #       if next_question is None:
+  #           next_question = False
 
-        return jsonify({
-            'success': True,
-            'question': next_question
-        })
+  #       return jsonify({
+  #           'success': True,
+  #           'question': next_question
+  #       })
 
   # '''
   # @TODO: 
