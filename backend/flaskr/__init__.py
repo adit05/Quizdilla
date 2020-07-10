@@ -160,8 +160,8 @@ def create_app(test_config=None):
   # Try using the word "title" to start. 
   # '''
 
-  @app.route('/questions', methods=['POST'])
-  def add_new_question():
+  @app.route('/questions/search', methods=['POST'])
+  def search_question():
         body = request.get_json()
         search_term = body.get('searchTerm', None)
 
@@ -176,6 +176,8 @@ def create_app(test_config=None):
                     'total_questions': len(selection.all()),
                     'current_category': None
                 })
+        except:
+          abort(404)        
 
   # '''
   # @TODO: 
@@ -185,6 +187,7 @@ def create_app(test_config=None):
   # categories in the left column will cause only questions of that 
   # category to be shown. 
   # '''
+  
   @app.route('/categories/<int:category_id>/questions', methods=['GET'])
   def retrieve_questions_by_category(category_id):
         try:
@@ -221,8 +224,7 @@ def create_app(test_config=None):
             abort(400)
         previous_q = body['previous_questions']
         category_id = body['quiz_category']['id']
-        category_id = str(int(category_id) + 1)
-
+        category_id = str(int(category_id))
         if category_id == 0:
             if previous_q is not None:
                 questions = Question.query.filter(
@@ -237,17 +239,16 @@ def create_app(test_config=None):
             else:
                 questions = Question.query.filter(
                     Question.category == category_id).all()
-
         next_question = random.choice(questions).format()
         if not next_question:
             abort(404)
         if next_question is None:
             next_question = False
-
         return jsonify({
             'success': True,
             'question': next_question
         })
+   
 
   # '''
   # @TODO: 
