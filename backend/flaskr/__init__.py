@@ -224,7 +224,7 @@ def create_app(test_config=None):
             abort(400)
         previous_q = body['previous_questions']
         category_id = body['quiz_category']['id']
-        category_id = str(int(category_id+1))
+        category_id = str(category_id)
         if category_id == 0:
             if previous_q is not None:
                 questions = Question.query.filter(
